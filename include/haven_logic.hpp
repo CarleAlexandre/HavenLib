@@ -1,7 +1,7 @@
 #ifndef HAVEN_LOGIC
 # define HAVEN_LOGIC
 
-#include <haven_def.h>
+#include "haven_def.h"
 
 const float getXpos3d(int idx, float max_x);
 const float getYpos3d(int idx, float max_x, float max_y);
