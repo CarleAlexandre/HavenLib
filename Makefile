@@ -1,0 +1,34 @@
+NAME		=	HavenLib.a
+
+BUILDDIR	=	build/
+
+CC			=	gcc
+
+CFLAGS		=	-std=c++20
+
+OBJ			=	$(SRC:%.cpp=%.o)
+
+DEPS		+=	$(wildcard include/*.hpp)
+
+SRC			+=	$(wildcard source/*.cpp)
+
+INCLUDE		=	-I include
+
+
+$(BUILDDIR)$(NAME)		:	$(OBJ) $(DEPS)
+		mkdir -p $(BUILDDIR)
+		ar rcs -o $@ $(OBJ) 
+
+$(OBJ)		:	%.o	:	%.cpp $(DEPS)
+		$(CC) $(CFLAGS) ${INCLUDE} -c $< -o $@
+
+all		:	$(BUILDDIR)$(NAME)
+
+clean		:
+		rm -rf $(OBJ)
+
+fclean		:	clean
+		rm -rf $(BUILDDIR)
+
+re		:	fclean all
+
