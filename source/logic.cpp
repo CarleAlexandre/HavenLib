@@ -69,8 +69,7 @@ f64 pow(f64 number, long power) {
 	return (result);
 }
 
-float lerp(float start, float end, float amount)
-{
+float lerpFun(float start, float end, float amount) {
     float result = start + amount*(end - start);
 
     return (result);
@@ -79,7 +78,7 @@ float lerp(float start, float end, float amount)
 f32 smoothStep(f32 t) {
     f32 v1 = t * t;
     f32 v2 = 1.0f - (1.0f - t) * (1.0f - t);
-    return (lerp(v1, v2, t));
+    return (lerpFun(v1, v2, t));
 }
 
 f32 clamp(f32 value, f32 lo, f32 hi) {
