@@ -1,4 +1,4 @@
-*.o
+#*.o
 *.out
 *.elf
 *.png
@@ -6,7 +6,7 @@
 *.exe
 *.d
 
-build/*
+#build/*
 .cache/*
 .vs
 
