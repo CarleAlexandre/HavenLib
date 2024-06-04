@@ -15,6 +15,9 @@ typedef struct s_token {
 void clearToken(std::vector<t_token> &token_list);
 template <typename T>std::vector<t_token> tokenizer(std::string str, const char *delim, size_t delim_size, std::unordered_map<std::string, T> &dictionnary);
 void eraseFromString(std::string &str, const char *delim, u32 delim_size);
+const char *getNextDelim(const char *str, const char *delim, size_t str_size, size_t delim_size);
+const char *stringSpliter(const char *str, const char *delim, size_t str_size, u32 delim_size);
+void eraseFromString(std::string &str, const char *delim, u32 delim_size);
 
 
 #endif
