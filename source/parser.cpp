@@ -104,45 +104,6 @@ void eraseFromString(std::string &str, const char *delim, u32 delim_size) {
 	}
 }
 
-template <typename T>
-std::vector<t_token> tokenizer(std::string str, const char *delim, size_t delim_size, std::unordered_map<std::string, T> &dictionnary) {
-	std::vector<t_token> token_list;
-	t_token tok;
-	const char *span;
-	const char *data = str.c_str();
-
-	for (size_t i = 0; i < str.size(); i++) {
-		span = getNextDelim(data + i, delim, str.size() - i, delim_size);
-		if (!span) {
-			break;
-		}
-		if (span == delim) {
-			token_list.clear();
-			break;
-		}
-		const char *tmp = stringSpliter(data + i, ":", span - data + i, 1);
-		for (int k = i; data + k < tmp; k++) {
-			tok.key += *(data + k);
-			i++;
-		}
-		if (data[i] == ':')
-			i++;
-		for (int k = i; data + k < span; k++){
-			tok.value += *(data + k);
-			i++;
-		}
-		tok.identifier = dictionnary[tok.key];
-		if (!tok.value.empty()) {
-			token_list.push_back(tok);
-			tok.value.clear();
-			tok.key.clear();
-			tok.identifier = 0;
-		}
-		i++;
-	}
-	return (token_list);
-}
-
 void clearToken(std::vector<t_token> &token_list) {
 	for (size_t i = 0; i < token_list.size(); i++) {
 		token_list[i].key.clear();
