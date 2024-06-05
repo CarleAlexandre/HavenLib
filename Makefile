@@ -17,10 +17,10 @@ INCLUDE		=	-I include
 
 $(BUILDDIR)$(NAME)		:	$(OBJ) $(DEPS)
 		mkdir -p $(BUILDDIR)
-		ar rcs -o $@ $(OBJ) 
+		ar rcs -o $@ $(OBJ)
 
 $(OBJ)		:	%.o	:	%.cpp $(DEPS)
-		$(CC) $(CFLAGS) ${INCLUDE} -c $< -o $@
+		$(CC) $(CFLAGS) ${INCLUDE} -lstdc++ -c $< -o $@
 
 all		:	$(BUILDDIR)$(NAME)
 
