@@ -1,4 +1,4 @@
-#include "../include/haven_def.h"
+#include <haven_def.h>
 #include <math.h>
 
 const float getXpos3d(int idx, float max_x) {
@@ -57,7 +57,7 @@ f32 rsqrt(f32 num) {
 	return y;
 }
 
-f64 pow(f64 number, long power) {
+f64 power(f64 number, long power) {
 	f64 result = 1;
 	while (power > 0) {
 		if (power & 1) {

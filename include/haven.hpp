@@ -3,7 +3,7 @@
 
 #include <haven_def.h>
 #include <haven_file.hpp>
-#include <haven_logic.hpp>
+#include <haven_logic.h>
 #include <haven_parser.hpp>
 
 #endif
