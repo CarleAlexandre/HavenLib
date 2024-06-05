@@ -1,4 +1,4 @@
-NAME		=	HavenLib.a
+NAME		=	libHavenLib.a
 
 BUILDDIR	=	build/
 
