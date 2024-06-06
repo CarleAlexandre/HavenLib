@@ -9,6 +9,7 @@ CFLAGS		=	-std=c++20
 OBJ			=	$(SRC:%.cpp=%.o)
 
 DEPS		+=	$(wildcard include/*.hpp)
+DEPS		+=	$(wildcard include/*.h)
 
 SRC			+=	$(wildcard source/*.cpp)
 
