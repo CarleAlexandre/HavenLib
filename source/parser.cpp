@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 #include "../include/haven_def.h"
-#include <unordered_map>
 
 typedef enum {
 	parse_context_none			= 0,
