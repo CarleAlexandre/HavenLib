@@ -15,7 +15,6 @@ static char *readFile(const char *filepath) {
 		ret = (char *)malloc(str.str().size() + 1);
 		ret[str.str().size()] = 0;
 		str.str().copy(ret, str.str().size());
-		ret[str.str().size()] = '\0';
 		str.clear();
 		//need to free returned value after use;
 		file.close();
