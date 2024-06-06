@@ -73,7 +73,7 @@ static inline void addNodeFront(t_node **list, t_node *new_elem) {
 static inline void insertNode(unsigned int idx, t_node **list, t_node *insert) {
 	t_node *span = (*list);
 
-	for (int i = 0; span->next && i <= idx; i++) {
+	for (int i = 0; span->next; i++) {
 		if (i == idx) {
 			t_node *tmp = span->next;
 			span->next = insert;
@@ -82,6 +82,7 @@ static inline void insertNode(unsigned int idx, t_node **list, t_node *insert) {
 			last->next = tmp;
 			return;
 		}
+		span = span->next;
 	}
 }
 
