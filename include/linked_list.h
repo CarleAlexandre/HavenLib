@@ -38,37 +38,36 @@ static inline t_node *createNode(void *data) {
 }
 
 static inline t_node *listLast(t_node **list) {
-	t_node *tmp = (*list);
+	t_node *span = (*list);
 
-	if (!tmp) {
+	if (!*list) {
 		return (0x00);
 	}
-	while (tmp && tmp->next) {
-		tmp = tmp->next;
+	while (span->next) {
+		span = span->next;
 	}
-	return (tmp);
+	return (span);
 }
 
 static inline void addNodeBack(t_node **list, t_node *new_elem) {\
-	t_node *tmp = listLast(list);
-
-	if (!tmp) {
-		(*list) = new_elem;
+	t_node *span = listLast(list);
+	if (span) {
+		span->next = new_elem;
+		new_elem->prev = span;
 		return;
 	}
-	tmp->next = new_elem;
-	new_elem->prev = tmp;
+	(*list) = new_elem;
 }
 
 static inline void addNodeFront(t_node **list, t_node *new_elem) {\
-	t_node *tmp = (*list);
+	t_node *span = (*list);
 
-	if (!tmp) {
+	if (!span) {
 		(*list) = new_elem;
 		return;
 	}
-	tmp->prev = new_elem;
-	new_elem->next = tmp;
+	span->prev = new_elem;
+	new_elem->next = span;
 }
 
 #endif
