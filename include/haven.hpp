@@ -5,5 +5,6 @@
 #include <haven_file.hpp>
 #include <haven_logic.h>
 #include <haven_parser.hpp>
+#include <linked_list.h>
 
 #endif
