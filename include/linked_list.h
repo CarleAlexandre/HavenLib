@@ -68,6 +68,7 @@ static inline void addNodeFront(t_node **list, t_node *new_elem) {
 	}
 	span->prev = new_elem;
 	new_elem->next = span;
+	(*list) = new_elem;
 }
 
 static inline void insertNode(unsigned int idx, t_node **list, t_node *insert) {
@@ -75,11 +76,32 @@ static inline void insertNode(unsigned int idx, t_node **list, t_node *insert) {
 
 	for (int i = 0; span->next; i++) {
 		if (i == idx) {
-			t_node *tmp = span->next;
-			span->next = insert;
-			insert->prev = span;
-			t_node *last = listLast(&insert);
-			last->next = tmp;
+			if (span) {
+				t_node *tmp = span->next;
+				span->next = insert;
+				insert->prev = span;
+				insert->next = tmp;
+			} else {
+				*list = insert;
+			}
+			return;
+		}
+		span = span->next;
+	}
+}
+
+static inline void eraseNode(unsigned int idx, t_node **list) {
+	t_node *span = (*list);
+
+	if (!span) {
+		abort();
+	}
+	for (int i = 0; span->next; i++) {
+		if (i == idx) {
+			t_node *tmp = span;
+			span->next->prev = span->prev;
+			span->prev->next = span->next;
+			free (tmp);
 			return;
 		}
 		span = span->next;
