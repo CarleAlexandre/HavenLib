@@ -96,6 +96,12 @@ static inline void eraseNode(unsigned int idx, t_node **list) {
 	if (!span) {
 		abort();
 	}
+	if (idx == 0) {
+		span->next->prev = 0x00;
+		*list = span->next;
+		free (span);
+		return;
+	}
 	for (int i = 0; span->next; i++) {
 		if (i == idx) {
 			t_node *tmp = span;
