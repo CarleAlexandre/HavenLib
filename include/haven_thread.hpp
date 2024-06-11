@@ -16,16 +16,18 @@ typedef enum {
 
 typedef struct s_thread_callback {
 	void *datain;
-	std::mutex in_mtx;
-	std::atomic<void *> dataout;
-	int (*fun)(void *in, void*out);
+	int in_size;
+	void *dataout;
+	int out_size;
+	std::mutex *mutex;
+	int (*fun)(void *in, void*out, int, int);
 } t_thread_callback;
 
 typedef struct s_thread_pool {
 	std::thread sync;
 	std::thread *thread;
 	std::atomic_int *th_status;
-	std::atomic<void *> *out;
+	std::mutex **out;
 	size_t max_thread;
 } t_thread_pool;
 
@@ -33,7 +35,17 @@ static t_thread_pool *thread_pool;
 static std::queue <t_thread_callback> callback;
 static std::mutex queue_mtx;
 
-template <typename T>
+static t_thread_callback createCallback(void*in, void*out, std::mutex *mtx, int in_size, int out_size, int (*fun)(void*, void*, int, int)) {
+	t_thread_callback callback;
+	callback.in_size = in_size;
+	callback.out_size = out_size;
+	callback.fun = fun;
+	callback.mutex = mtx;
+	callback.datain = in;
+	callback.dataout = out;
+	return (callback);
+}
+
 static void addCallbackFunction(t_thread_callback new_callback) {
 	queue_mtx.lock();
 	callback.push(new_callback);
@@ -47,7 +59,9 @@ static void syncThreadPool(t_thread_pool *thread_pool) {
 			if (callback.size()) {
 				for(int i = 0; i < thread_pool->max_thread; i++) {
 					if (thread_pool->th_status[i].load() == idle) {
-						thread_pool->thread[i] = std::thread(callback.front().fun, callback.front().datain, callback.front().dataout.load());
+						thread_pool->out[i] = callback.front().mutex;
+						thread_pool->out[i]->lock();
+						thread_pool->thread[i] = std::thread(callback.front().fun, callback.front().datain, callback.front().dataout, callback.front().in_size, callback.front().out_size);
 						thread_pool->th_status[i].store(working);
 						callback.pop();
 					}
@@ -58,6 +72,7 @@ static void syncThreadPool(t_thread_pool *thread_pool) {
 		for(int i = 0; i < thread_pool->max_thread; i++) {
 			if (thread_pool->thread[i].joinable()) {
 				thread_pool->thread[i].join();
+				thread_pool->out[i]->unlock();
 				thread_pool->th_status[i].store(idle);
 			}
 		}
@@ -76,6 +91,7 @@ static void startThreadPool() {
 	assert(thread_pool->thread);
 	thread_pool->th_status = new std::atomic_int [thread_pool->max_thread];
 	assert(thread_pool->th_status);
+	thread_pool->out = new std::mutex *[thread_pool->max_thread];
 	thread_pool->sync = std::thread(syncThreadPool, thread_pool);
 }
 
@@ -84,6 +100,7 @@ static void endThreadPool(void) {
 	thread_pool->sync.join();
 	delete [] thread_pool->thread;
 	delete [] thread_pool->th_status;
+	delete [] thread_pool->out;
 	delete thread_pool;
 }
 
