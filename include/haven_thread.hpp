@@ -61,7 +61,6 @@ static void addCallbackFunction(t_thread_callback new_callback) {
 static void syncThreadPool(t_thread_pool *thread_pool, std::atomic_bool *join) {
 	while (!join->load()) {
 		if (queue_mtx.try_lock()) {
-			queue_mtx.lock();
 			if (callback.size()) {
 				for(int i = 0; i < thread_pool->max_thread; i++) {
 					if (thread_pool->th_status[i].load() == idle) {
