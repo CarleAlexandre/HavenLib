@@ -35,7 +35,7 @@ static t_thread_pool *thread_pool;
 static std::queue <t_thread_callback> callback;
 static std::mutex queue_mtx;
 
-static t_thread_callback createCallback(void*in, void*out, std::mutex *mtx, int in_size, int out_size, int (*fun)(void*, void*, int, int)) {
+static t_thread_callback createCallback(void *in, void *out, std::mutex *mtx, int in_size, int out_size, int (*fun)(void*, void*, int, int)) {
 	t_thread_callback callback;
 	callback.in_size = in_size;
 	callback.out_size = out_size;
