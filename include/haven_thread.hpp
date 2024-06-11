@@ -47,13 +47,19 @@ static t_thread_callback createCallback(void*in, void*out, std::mutex *mtx, int 
 }
 
 static void addCallbackFunction(t_thread_callback new_callback) {
-	queue_mtx.lock();
-	callback.push(new_callback);
-	queue_mtx.unlock();
+	for (int i = 0; i < 10; i++) {
+		if (queue_mtx.try_lock()) {
+			callback.push(new_callback);
+			queue_mtx.unlock();
+			return;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	}
+	assert(false);
 }
 
-static void syncThreadPool(t_thread_pool *thread_pool) {
-	while (1) {
+static void syncThreadPool(t_thread_pool *thread_pool, std::atomic_bool *join) {
+	while (!join) {
 		if (queue_mtx.try_lock()) {
 			queue_mtx.lock();
 			if (callback.size()) {
@@ -96,7 +102,7 @@ static void startThreadPool() {
 }
 
 static void endThreadPool(void) {
-	while (!thread_pool->sync.joinable()) std::this_thread::sleep_for(std::chrono::milliseconds(250));
+	//while (!thread_pool->sync.joinable()) std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	thread_pool->sync.join();
 	delete [] thread_pool->thread;
 	delete [] thread_pool->th_status;
