@@ -18,7 +18,7 @@ typedef struct s_thread_callback {
 	void *datain;
 	std::mutex in_mtx;
 	std::atomic<void *> dataout;
-	int (*fun)(void *);
+	int (*fun)(void *in, void*out);
 } t_thread_callback;
 
 typedef struct s_thread_pool {
