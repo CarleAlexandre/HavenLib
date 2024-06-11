@@ -7,6 +7,8 @@
 #include <cassert>
 #include <queue>
 
+#define SLEEP_TIME 20
+
 typedef enum {
 	idle = 1,
 	working = 2,
@@ -47,13 +49,13 @@ static t_thread_callback createCallback(void *in, void *out, std::mutex *mtx, in
 }
 
 static void addCallbackFunction(t_thread_callback new_callback) {
-	for (int i = 0; i < 10; i++) {
+	for (;;) {
 		if (queue_mtx.try_lock()) {
 			callback.push(new_callback);
 			queue_mtx.unlock();
 			return;
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
 	}
 	assert(false);
 }
@@ -81,7 +83,7 @@ static void syncThreadPool(t_thread_pool *thread_pool, std::atomic_bool *join) {
 				thread_pool->th_status[i].store(idle);
 			}
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
 	}
 }
 
@@ -101,8 +103,8 @@ static void startThreadPool(std::atomic_bool *join) {
 }
 
 static void endThreadPool(std::atomic_bool *join) {
-	join->store(1);
-	while (!thread_pool->sync.joinable()) std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	join->store(true);
+	while (!thread_pool->sync.joinable()) std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
 	thread_pool->sync.join();
 	delete [] thread_pool->thread;
 	delete [] thread_pool->th_status;
