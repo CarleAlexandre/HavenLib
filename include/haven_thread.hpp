@@ -17,8 +17,7 @@ typedef enum {
 typedef struct s_thread_callback {
 	void *datain;
 	std::mutex in_mtx;
-	void *dataout;
-	std::mutex out_mtx;
+	std::atomic<void *> dataout;
 	int (*fun)(void *);
 } t_thread_callback;
 
@@ -26,6 +25,7 @@ typedef struct s_thread_pool {
 	std::thread sync;
 	std::thread *thread;
 	std::atomic_int *th_status;
+	std::atomic<void *> *out;
 	size_t max_thread;
 } t_thread_pool;
 
@@ -47,11 +47,11 @@ static void syncThreadPool(t_thread_pool *thread_pool) {
 			if (callback.size()) {
 				for(int i = 0; i < thread_pool->max_thread; i++) {
 					if (thread_pool->th_status[i].load() == idle) {
-						thread_pool->thread[i] = std::thread(callback.front().fun, callback.front().datain, callback.front().dataout);
+						thread_pool->thread[i] = std::thread(callback.front().fun, callback.front().datain, callback.front().dataout.load());
 						thread_pool->th_status[i].store(working);
+						callback.pop();
 					}
 				}
-				callback.pop();
 			}
 			queue_mtx.unlock();
 		}
